@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hWizard101 - 响指触发器</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+    /* 1. 基础样式 */
+    body { 
+        background: #000; /* 纯黑背景，光效更明显 */
+        color: #fff; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        justify-content: center; 
+        height: 100vh; 
+        margin: 0; 
+        font-family: -apple-system, sans-serif; 
+        overflow: hidden; /* 防止光环扩张导致出现滚动条 */
+        position: relative; /* 为伪元素定位 */
+    }
+
+    /* 2. 定义魔力光环的初始状态 */
+    body::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: radial-gradient(circle, rgb(139, 81, 145) 0%, rgba(139,0,0,0) 70%); /* 中心亮红，四周透明 */
+        opacity: 0; /* 默认不可见 */
+        pointer-events: none; /* 防止遮挡点击 */
+        z-index: 10; /* 浮在最上层 */
+    }
+
+    /* 3. 【核心】当 body 拥有 .glow-active 时，执行 0.4秒 的扩散动画 */
+    body.glow-active::after {
+        animation: snap-pulse 0.7s ease-out;
+    }
+
+    /* 4. 定义扩散动画关键帧 */
+    @keyframes snap-pulse {
+        0% {
+            opacity: 1;
+            transform: scale(0.2); /* 从中心一个小点开始 */
+        }
+        100% {
+            opacity: 0; /* 逐渐变透明 */
+            transform: scale(2.5); /* 迅速扩张到屏幕的 2.5 倍大 */
+            background: radial-gradient(circle, rgba(255,59,48,0.5) 0%, rgba(200,0,0,0) 80%); /* 颜色也变暗淡 */
+        }
+    }
+
+    /* 5. 其他 UI 样式保持不变 */
+    #startBtn { 
+        width: 160px; height: 160px; border-radius: 50%; border: none; 
+        background: #6283a7; color: white; font-size: 18px; font-weight: bold; 
+        cursor: pointer; transition: transform 0.2s, background-color 0.3s; 
+        box-shadow: 0 0 30px rgba(0,122,255,0.4); 
+        position: relative; z-index: 20; /* 确保按钮在光环上面 */
+        -webkit-tap-highlight-color: transparent; 
+    }
+    #startBtn:active { transform: scale(0.9); }
+    
+    #status { margin-top: 40px; font-size: 16px; color: #aaa; text-align: center; line-height: 1.5; position: relative; z-index: 20; }
+    
+    .meter-container { width: 80%; height: 6px; background: #222; border-radius: 3px; margin-top: 20px; overflow: hidden; position: relative; z-index: 20; }
+    #meter-bar { height: 100%; width: 0%; background: #4CD964; transition: width 0.05s, background-color 0.1s; }
+</style>
+</head>
+<body>
+    <button id="startBtn">开启魔法</button>
+    <div class="meter-container"><div id="meter-bar"></div></div>
+    <div id="status">点击按钮授权麦克风</div>
+
+    <script src="app.js"></script>
+</body>
+</html>
